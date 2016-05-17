@@ -10,8 +10,7 @@ import br.com.etecmam.cartolafc.negocios.Jogador;
 
 public class CartolaDB{
 	
-	private static EntityManagerFactory emf  = Persistence.createEntityManagerFactory("CartolaUNIT");
-	
+	private static EntityManagerFactory emf  = Persistence.createEntityManagerFactory("CartolaUNIT");	
 	private static CartolaDB banco = null;
 
 	

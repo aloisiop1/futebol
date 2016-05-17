@@ -64,8 +64,7 @@ public class JogadorUI extends JFrame {
 
 	private JPanel contentPane;
 	private JTextField txtCodigo;
-	private JTextField txtNome;	
-	
+	private JTextField txtNome;
 	private JTextField txtIdade;
 	private JTable tabela;
 	
@@ -252,7 +251,7 @@ public class JogadorUI extends JFrame {
 		contentPane.setLayout(null);
 		
 		JPanel panel = new JPanel();
-		panel.setBorder(new LineBorder(new Color(0, 0, 0)));
+		panel.setBorder(new LineBorder(Color.LIGHT_GRAY));
 		panel.setBounds(10, 182, 601, 148);
 		contentPane.add(panel);
 		panel.setLayout(null);
@@ -368,7 +367,7 @@ public class JogadorUI extends JFrame {
 		panel.add(btnFoto);
 		
 		JPanel panel_2 = new JPanel();
-		panel_2.setBorder(new LineBorder(new Color(0, 0, 0)));
+		panel_2.setBorder(new LineBorder(Color.LIGHT_GRAY));
 		panel_2.setBounds(5, 5, 133, 140);
 		panel.add(panel_2);
 		panel_2.setLayout(null);
@@ -410,7 +409,7 @@ public class JogadorUI extends JFrame {
 		painelRolavel.setViewportView(tabela);
 		
 		JPanel panel_1 = new JPanel();
-		panel_1.setBorder(new LineBorder(new Color(0, 0, 0)));
+		panel_1.setBorder(new LineBorder(Color.LIGHT_GRAY));
 		panel_1.setBounds(10, 335, 601, 57);
 		contentPane.add(panel_1);
 		panel_1.setLayout(null);
