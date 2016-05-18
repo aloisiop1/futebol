@@ -1,17 +1,8 @@
 package br.com.etecmam.cartolafc.apresentacao;
 
-import java.awt.EventQueue;
-import java.awt.Graphics2D;
-import java.awt.Image;
-
-import javax.imageio.ImageIO;
-import javax.persistence.EntityManager;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
-
-import java.awt.Toolkit;
-
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -19,11 +10,6 @@ import javax.swing.border.LineBorder;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableColumn;
-
-import java.awt.Color;
-
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -33,50 +19,51 @@ import javax.swing.JTable;
 import javax.swing.UIManager;
 import javax.swing.SpinnerDateModel;
 
+import java.awt.Toolkit;
+import java.awt.Color;
+import java.awt.EventQueue;
+import java.awt.Graphics2D;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import java.awt.image.BufferedImage;
+import javax.imageio.ImageIO;
+
 import br.com.etecmam.cartolafc.negocios.Jogador;
 import br.com.etecmam.cartolafc.persistencia.CartolaDB;
 
-import java.time.Instant;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.Calendar;
 import java.util.List;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
-import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-
 
 public class JogadorUI extends JFrame {
 
+	private static final long serialVersionUID = 1L;
+
 	private JPanel contentPane;
+	
 	private JTextField txtCodigo;
 	private JTextField txtNome;
-	private JTextField txtIdade;
+	private JTextField txtPosicao;
+	private JLabel lblImagem;
+	private JSpinner dataNascimento;
+	private JScrollPane painelRolavel;
 	private JTable tabela;
 	
 	
-	private CartolaDB banco = CartolaDB.getInstancia();
-	
-	private String caminhoImagem;
-	
+	private CartolaDB banco = CartolaDB.getInstancia();	
+	private String caminhoImagem;	
 	private String[] colunas = {"ID", "NOME", "POSIÇÃO", "DATA NASC.","IDADE"};
-	private JSpinner dataNascimento;
-	private JLabel lblImagem;
-	private JTextField txtPosicao;
 	
 	
 	private BufferedImage redimencionarImagem(BufferedImage imagemOriginal, int largura, int altura, int tipo) throws IOException {  
@@ -90,56 +77,46 @@ public class JogadorUI extends JFrame {
 		
 	}  
 		
-	  
-	   public String escolherImagens() throws NullPointerException {
-		   
-		   String imagem;
+		  
+	public String escolherImagens() throws NullPointerException {
+
+		String imagem;
+
+		JFileChooser fc = new JFileChooser();
+		fc.setCurrentDirectory(new File(System.getProperty("user.home")));
+
+		FileFilter imageFilter = new FileNameExtensionFilter(
+				"Image files", 
+				ImageIO.getReaderFileSuffixes());
+
+		fc.addChoosableFileFilter( imageFilter );
+		fc.setAcceptAllFileFilterUsed(false);
+		fc.showOpenDialog(this);  
+
+		File file = fc.getSelectedFile();
+
+		try {				   
+
+			imagem = file.getAbsolutePath();
+
+		} catch (NullPointerException e) {
+			imagem = null;
+		}
 
 
-		   JFileChooser fc = new JFileChooser();
-		   fc.setCurrentDirectory(new File(System.getProperty("user.home")));
-
-		   FileFilter imageFilter = new FileNameExtensionFilter(
-				   "Image files", ImageIO.getReaderFileSuffixes());
-
-		   fc.addChoosableFileFilter( imageFilter );
-		   fc.setAcceptAllFileFilterUsed(false);
-		   fc.showOpenDialog(this);  
-
-		   File file = fc.getSelectedFile();
-
-		   
-		   try {				   
-
-			   imagem = file.getAbsolutePath();
-
-		   } catch (NullPointerException e) {
-			   imagem = null;
-		   }
-
-
-		   return imagem;  
-	   }  
+		return imagem;  
+	}  
 	  
 	   
 	public void limparCampos(){
 		
 		txtCodigo.setText("");
-		txtNome.setText("");
-		txtIdade.setText("");
-		txtPosicao.setText("");
-		
-		dataNascimento.setValue(new Date());
-		
+		txtNome.setText("");		
+		txtPosicao.setText("");		
+		dataNascimento.setValue(new Date());		
 		lblImagem.setIcon(null);
-		
-		
-		//LocalDate date = input.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();		
-		//Date dt = new Date(ZonedDateTime.now().toInstant().toEpochMilli());				
-		
 	}
-	
-	
+		
 	public  void popularGrid(){
 			
 		List<Jogador> jogadores = banco.getJogadores();
@@ -156,8 +133,7 @@ public class JogadorUI extends JFrame {
 			
 		}			
 		
-		tabela.setModel(new DefaultTableModel(dados, colunas));
-										
+		tabela.setModel(new DefaultTableModel(dados, colunas));									
 		
 	}
 	
@@ -182,26 +158,20 @@ public class JogadorUI extends JFrame {
 		txtCodigo.setText( String.valueOf( jogador.getId() ) );
 		txtNome.setText( String.valueOf( jogador.getNome() ) );
 		txtPosicao.setText(jogador.getPosicao());
-		
-		
 		//DATA /////////////////////////////////////////////////////////////////////////////////////////
-
 		Date data = Date.from(jogador.getDataNascimento()
 					.atStartOfDay(ZoneId.systemDefault())
 					.toInstant());
 		
 		dataNascimento.setValue(data);
-		
-		
 		//FOTO /////////////////////////////////////////////////////////////////////////////////////////
 		byte[] fotoEmBytes = jogador.getImage();
-						
-		
+								
 		if(fotoEmBytes != null){										
 			
 			InputStream in = new ByteArrayInputStream(fotoEmBytes);
 		
-			BufferedImage imagemOriginal       = ImageIO.read(in);
+			BufferedImage imagemOriginal = ImageIO.read(in);
 			
 			BufferedImage imagemRedimensionada = 
 					redimencionarImagem(imagemOriginal, lblImagem.getWidth(), lblImagem.getHeight(), 1);
@@ -212,10 +182,7 @@ public class JogadorUI extends JFrame {
 			
 		}else{
 			lblImagem.setIcon(null);
-		}
-		
-		
-							
+		}							
 		
 	}	
 	
@@ -241,9 +208,7 @@ public class JogadorUI extends JFrame {
 		});
 	}
 
-	/**
-	 * Create the frame.
-	 */
+	
 	public JogadorUI() {
 		setTitle("CADASTRO DE JOGADORES");
 		setIconImage(Toolkit.getDefaultToolkit().getImage(JogadorUI.class.getResource("/br/com/etecmam/cartolafc/images/Football-52.png")));
@@ -281,20 +246,7 @@ public class JogadorUI extends JFrame {
 		panel.add(lblNome);
 		
 		dataNascimento = new JSpinner();
-		dataNascimento.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseExited(MouseEvent arg0) {
 				
-				Date data = (Date) dataNascimento.getValue();				
-				LocalDate dtn = data.toInstant().atZone( ZoneId.systemDefault() ).toLocalDate();		
-				
-				Jogador j = new Jogador();
-				j.setDataNascimento(dtn);
-				
-				txtIdade.setText( String.valueOf( j.getIdade() ));				
-			}
-		});
-		
 		
 		dataNascimento.setModel(new SpinnerDateModel(new Date(1463022000000L), null, null, Calendar.DAY_OF_YEAR));
 		dataNascimento.setBounds(288, 99, 68, 20);
@@ -304,64 +256,36 @@ public class JogadorUI extends JFrame {
 		lblDtNascimento.setBounds(230, 102, 64, 14);
 		panel.add(lblDtNascimento);
 		
-		txtIdade = new JTextField();
-		txtIdade.setEditable(false);
-		txtIdade.setBounds(491, 99, 68, 20);
-		panel.add(txtIdade);
-		txtIdade.setColumns(10);
-		
-		JLabel lblIdade = new JLabel("Idade");
-		lblIdade.setBounds(433, 102, 48, 14);
-		panel.add(lblIdade);
-		
 		JButton btnFoto = new JButton("");
 		btnFoto.setIcon(new ImageIcon(JogadorUI.class.getResource("/br/com/etecmam/cartolafc/images/Search-22.png")));
+		
 		btnFoto.addActionListener(new ActionListener() {
 			
-
 			public void actionPerformed(ActionEvent arg0) {
-			
 				
-				caminhoImagem = escolherImagens();
-					
-			    System.out.println(caminhoImagem);
-			    		    
-			    /*
-			    ImageIcon imageIcon = new ImageIcon(caminhoImagem);
-			    
-			    lblImagem.setIcon(imageIcon);
-			    
-			    //////////////////////////////////////////////////////////////////////////////
- 			    
-			    */
-			    
+				caminhoImagem = escolherImagens();					
 		
-			    try {
-				
+			    try {				
 			    	
 			    	BufferedImage imagemOriginal = ImageIO.read(new File(caminhoImagem));
 			    	
-			    	BufferedImage imagemRedimensionada = redimencionarImagem(imagemOriginal, lblImagem.getWidth(), lblImagem.getHeight(), 1);	
+			    	BufferedImage imagemRedimensionada = redimencionarImagem(imagemOriginal, 
+			    															 lblImagem.getWidth(), 
+			    															 lblImagem.getHeight(),
+			    															 1);			    				    	
 			    	
 			    	ImageIcon imageIcon = new ImageIcon(imagemRedimensionada);
-				    
+			    	
 				    lblImagem.setIcon(imageIcon);
 				    
 					
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
-				}	
-			    
-			    
-			  //  super.paintComponent(g);
-		 //       g.drawImage(image, 0, 0, null); // see javadoc for more info on the parameter
-			    
-			   
-							
+				}				    
 				
 			}
 		});
+		
 		
 		
 		
@@ -391,7 +315,7 @@ public class JogadorUI extends JFrame {
 		txtPosicao.setBounds(288, 71, 271, 20);
 		panel.add(txtPosicao);
 		
-		JScrollPane painelRolavel = new JScrollPane();
+		painelRolavel = new JScrollPane();
 		painelRolavel.setBounds(10, 11, 601, 166);
 		contentPane.add(painelRolavel);
 		
@@ -420,22 +344,25 @@ public class JogadorUI extends JFrame {
 		
 		JButton btnNovo = new JButton("Novo");
 		btnNovo.setIcon(new ImageIcon(JogadorUI.class.getResource("/br/com/etecmam/cartolafc/images/Plus-26.png")));
+		
 		btnNovo.addActionListener(new ActionListener() {
 			
 			public void actionPerformed(ActionEvent arg0) {
 				
 				limparCampos();
 				txtNome.requestFocus();
-
 				
 			}
 		});
+		
 		btnNovo.setBounds(10, 11, 105, 35);
 		panel_1.add(btnNovo);
 		
 		JButton btnSalvar = new JButton("Salvar");
 		btnSalvar.setIcon(new ImageIcon(JogadorUI.class.getResource("/br/com/etecmam/cartolafc/images/Save-26.png")));
+	
 		btnSalvar.addActionListener(new ActionListener() {
+			
 			public void actionPerformed(ActionEvent arg0) {
 				
 				Jogador jogador = new Jogador();
@@ -463,25 +390,18 @@ public class JogadorUI extends JFrame {
 				        e.printStackTrace();
 			        }	        
 			        		        
-			        jogador.setImage(arquivoEmBytes);
-					
-				}
-					
+			        jogador.setImage(arquivoEmBytes);					
+				}				
+				
 		        ////////////////////////////////////////////////////////////////////////////////
 								
 				if(txtCodigo.getText().equals("") ){
 					banco.addJogador(jogador);					
-					JOptionPane.showMessageDialog(JogadorUI.this, "JOGADOR ADICIONADO !!!" );										
-					
-				}else{					
-					
+					JOptionPane.showMessageDialog(JogadorUI.this, "JOGADOR ADICIONADO !!!" );
+				}else{										
 					banco.updateJogador(Integer.valueOf(txtCodigo.getText()), jogador);
-					JOptionPane.showMessageDialog(JogadorUI.this, "JOGADOR ATUALIZADO !!!" );
-										
-				}				
-				
-				txtIdade.setText( String.valueOf( jogador.getIdade() ) );
-								
+					JOptionPane.showMessageDialog(JogadorUI.this, "JOGADOR ATUALIZADO !!!" );										
+				}												
 				popularGrid();								
 				
 			}
@@ -493,6 +413,7 @@ public class JogadorUI extends JFrame {
 		
 		JButton btnExcluir = new JButton("Excluir");
 		btnExcluir.setIcon(new ImageIcon(JogadorUI.class.getResource("/br/com/etecmam/cartolafc/images/Minus-26.png")));
+		
 		btnExcluir.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				
@@ -529,15 +450,19 @@ public class JogadorUI extends JFrame {
 		
 		JButton btnSair = new JButton("Sair");
 		btnSair.setIcon(new ImageIcon(JogadorUI.class.getResource("/br/com/etecmam/cartolafc/images/Circled Right-26.png")));
+		
 		btnSair.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {			
 				System.exit(0);
 			}
 		});
+		
+		
 		btnSair.setBounds(491, 11, 105, 35);
 		panel_1.add(btnSair);
 		
 		JButton btnCancelar = new JButton("Cancelar");
+		
 		btnCancelar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				
@@ -550,6 +475,7 @@ public class JogadorUI extends JFrame {
 				
 			}
 		});
+		
 		btnCancelar.setIcon(new ImageIcon(JogadorUI.class.getResource("/br/com/etecmam/cartolafc/images/Undo-26.png")));
 		btnCancelar.setBounds(240, 11, 105, 35);
 		panel_1.add(btnCancelar);
