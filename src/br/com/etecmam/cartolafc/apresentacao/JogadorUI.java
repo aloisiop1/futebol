@@ -93,28 +93,32 @@ public class JogadorUI extends JFrame {
 	  
 	   public String escolherImagens() throws NullPointerException {
 		   
-	      String imagem;
-	      
-	      JFileChooser fc = new JFileChooser();
-	      fc.setCurrentDirectory(new File(System.getProperty("user.home")));
+		   String imagem;
 
-	      FileFilter imageFilter = new FileNameExtensionFilter(
-	    		    "Image files", ImageIO.getReaderFileSuffixes());
-	      	
-	      
-	      fc.addChoosableFileFilter( imageFilter );
-	      fc.setAcceptAllFileFilterUsed(false);
-	      
-	     //fc.setMultiSelectionEnabled(true);
-	      
-	  
-	      fc.showOpenDialog(this);  
-	  
-	      File file = fc.getSelectedFile();  
-	            
-	      imagem = file.getAbsolutePath();  
-	        
-	      return imagem;  
+
+		   JFileChooser fc = new JFileChooser();
+		   fc.setCurrentDirectory(new File(System.getProperty("user.home")));
+
+		   FileFilter imageFilter = new FileNameExtensionFilter(
+				   "Image files", ImageIO.getReaderFileSuffixes());
+
+		   fc.addChoosableFileFilter( imageFilter );
+		   fc.setAcceptAllFileFilterUsed(false);
+		   fc.showOpenDialog(this);  
+
+		   File file = fc.getSelectedFile();
+
+		   
+		   try {				   
+
+			   imagem = file.getAbsolutePath();
+
+		   } catch (NullPointerException e) {
+			   imagem = null;
+		   }
+
+
+		   return imagem;  
 	   }  
 	  
 	   
@@ -417,6 +421,7 @@ public class JogadorUI extends JFrame {
 		JButton btnNovo = new JButton("Novo");
 		btnNovo.setIcon(new ImageIcon(JogadorUI.class.getResource("/br/com/etecmam/cartolafc/images/Plus-26.png")));
 		btnNovo.addActionListener(new ActionListener() {
+			
 			public void actionPerformed(ActionEvent arg0) {
 				
 				limparCampos();

@@ -26,16 +26,14 @@ public class Jogador {
 	@Transient
 	private int idade;
 	
-	
     @Lob
-    //@Column(name="BOOK_IMAGE", nullable=false, columnDefinition="mediumblob")
     private byte[] image;
  
-	
-	
+		
 	public Jogador() {
 	}
 
+	//CRIAR GETTERS AND SETTERS
 
 	
 	public int getId() {

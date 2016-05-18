@@ -12,45 +12,35 @@ public class CartolaDB{
 	
 	private static EntityManagerFactory emf  = Persistence.createEntityManagerFactory("CartolaUNIT");	
 	private static CartolaDB banco = null;
-
 	
-	private CartolaDB() {
-		
+	private CartolaDB() {		
 	}
 	
-	public static CartolaDB getInstancia(){
-		
+	public static CartolaDB getInstancia(){		
 		if(banco == null){
 			banco = new CartolaDB();
-		}
-		
+		}		
 		return banco;		
 	}
-		
-
-		
+				
 	
 	public Jogador addJogador(Jogador jogador){
 		
 		try {
 			
-			EntityManager em = getEmf().createEntityManager();
-	
+			EntityManager em = getEmf().createEntityManager();	
 			em.getTransaction().begin();
 			em.persist(jogador);
-			em.getTransaction().commit();
-	
+			em.getTransaction().commit();	
 			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 				
-		return jogador;
-		
+		return jogador;		
 		
 	}
-	
-	
+		
 		
 	public boolean deleteJogador(int id){
 		
@@ -67,7 +57,7 @@ public class CartolaDB{
 				em.remove(jogador);
 				em.getTransaction().commit();
 				resp = true;
-			}					
+			}				
 			
 						
 		} catch (Exception e) {

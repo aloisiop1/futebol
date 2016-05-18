@@ -8,21 +8,11 @@ import br.com.etecmam.cartolafc.apresentacao.JogadorUI;
 public class CartolaFC {
 	
 	public static void main(String[] args)
-			throws ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException {
-				
-		/*		
-		///INSTANCIAR OBJETO
-		PrincipalUI principal = new PrincipalUI();
-		
-		//DEFINIR COMO CENTRO DA TELA
-		principal.setLocationRelativeTo(null);
-		
-		//TORNAR FORMULÁRIO VISÍVEL
-		principal.setVisible(true);
-		
-		*/
-
-		
+			throws ClassNotFoundException, 
+			InstantiationException, 
+			IllegalAccessException, 
+			UnsupportedLookAndFeelException {
+			
 		UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
 		
 		///INSTANCIAR OBJETO
@@ -42,3 +32,5 @@ public class CartolaFC {
 	}
 
 }
+
+
